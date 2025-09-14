@@ -1,0 +1,43 @@
+{
+  "geom": {
+    "l": 1.1,
+    "d": 0.12,
+    "base_ratio": 0.0
+  },
+  "op": {
+    "V": 15.0,
+    "rho": 1.225,
+    "nu": 1.5e-05
+  },
+  "cf_model": {
+    "mode": "turbulent",
+    "k_transition": 1700.0,
+    "threeD_correction": 1.07
+  },
+  "builder": {
+    "Ln_frac": 0.25,
+    "C_haack": 0.3333333333,
+    "Nn": 200,
+    "Lt_frac": 0.25,
+    "r_tip": 0.0,
+    "enforce_tail_angle": true,
+    "alpha_max_deg": 13.0,
+    "Nt": 200
+  },
+  "mass": {
+    "use_surface_density": false,
+    "sigma_surface": 1.0,
+    "rho_material": 1250.0,
+    "t_skin": 0.0005,
+    "include_base_disk_area": false,
+    "g": 9.81
+  },
+  "io": {
+    "export_csv": true,
+    "csv_path": "results/data/fuselaje_xy.csv"
+  },
+  "plots": {
+    "make_plots": true,
+    "dpi": 140
+  }
+}
