@@ -6,10 +6,10 @@ The project is intentionally compact and dependency‑light by default. Optional
 
 ## Highlights
 
-- Geometry synthesis: Haack nose + optional cylinder + cosine tail.
-- Aerodynamics: friction correlations (laminar / transition / turbulent) and Hoerner‑style frontal drag factor; optional base drag.
-- Integrals: wetted area, base area, solid volume, and simple CG locations along x.
-- Mass: shell mass/weight from surface density or ρ·t.
+- Geometry synthesis: Haack nose + optional cylinder + cosine tail. Aerodynamic shapes studied by researchers for their drag minimisation in subsonic flow regimes.
+- Aerodynamics: friction correlations (laminar / transition / turbulent) and estimations based on Hoerner's "Fluid Dynamic Drag" chapter on fuselage-like bodies.
+- Dimensions: integrals for the wetted area, base area, solid volume, and simple CG locations along x.
+- Mass: shell mass/weight from surface density or volume density if specified a skin thickness
 - Outputs: CSV of the 2D profile, JSON payload with results, and dashboard plots.
 - Exports: STL of the 3D fuselage surface (ASCII or binary).
 - GUI: dark theme, full‑pane Matplotlib wireframe in the app; optional interactive 3D in a browser or a pywebview window.
