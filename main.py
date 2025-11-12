@@ -1,25 +1,23 @@
 import json
 import os
-import sys
-import threading
-import traceback
 import platform
 import subprocess
+import threading
 import tkinter as tk
-from tkinter import ttk, filedialog, messagebox
+import traceback
 from tkinter import font as tkfont
+from tkinter import ttk, filedialog, messagebox
+
+import numpy as np
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+# Matplotlib for 3D rendering embedded in Tkinter
+from matplotlib.figure import Figure
 
 from src.configio import load_config
 from src.pipeline import run_case
 from src.utils import export_fuselage_stl, stamp_name
-import numpy as np
 
-# Matplotlib for 3D rendering embedded in Tkinter
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-import matplotlib as mpl
-
-# Optional: modern interactive 3D via Plotly inside Tk HTML frame
+#interactive 3D via Plotly inside Tk HTML frame
 try:
     from tkinterweb import HtmlFrame  # pip install tkinterweb
     import plotly.graph_objects as go  # pip install plotly
@@ -27,14 +25,14 @@ try:
 except Exception:
     HAS_PLOTLY = False
 
-# Optional: show Plotly in a separate pywebview window (recommended on Manjaro)
+#show Plotly in a separate pywebview window (recommended on Manjaro)
 try:
     import webview as pywebview  # pip install pywebview (needs webkit2gtk on Linux)
     HAS_PYWEBVIEW = True
 except Exception:
     HAS_PYWEBVIEW = False
 
-# Optional: native interactive 3D via VTK embedded in Tk
+#native interactive 3D via VTK embedded in Tk
 try:
     from vtkmodules.vtkRenderingCore import vtkRenderer, vtkActor, vtkPolyDataMapper
     from vtkmodules.vtkCommonDataModel import vtkPolyData, vtkCellArray
@@ -61,8 +59,8 @@ class FuselageLabApp(tk.Tk):
 
         # Fonts (larger for readability in Summary and Config)
         try:
-            self._summary_label_font = tkfont.Font(size=24)
-            self._summary_value_font = tkfont.Font(size=18, weight="bold")
+            self._summary_label_font = tkfont.Font(size=18)
+            self._summary_value_font = tkfont.Font(size=14, weight="bold")
             self._config_font = tkfont.Font(size=12)
         except Exception:
             # Fallbacks in case fonts can't be created
@@ -1503,7 +1501,6 @@ class FuselageLabApp(tk.Tk):
     # ---------- VTK helpers ----------
     def _build_vtk_surface(self, X, Y, Z):
         """Create a VTK surface from gridded X,Y,Z arrays."""
-        import numpy as np
         n_i, n_j = X.shape
         points = vtkPoints()
         points.SetNumberOfPoints(n_i * n_j)

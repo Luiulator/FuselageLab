@@ -1,7 +1,7 @@
 {
   "geom": {
-    "l": 1.1,
-    "d": 0.12,
+    "l": 10.0,
+    "d": 2.0,
     "base_ratio": 0.0
   },
   "op": {
@@ -15,13 +15,13 @@
     "threeD_correction": 1.07
   },
   "builder": {
-    "Ln_frac": 0.25,
-    "C_haack": 0.3333333333,
+    "Ln_frac": 0.9,
+    "C_haack": 0.99,
     "Nn": 200,
-    "Lt_frac": 0.25,
+    "Lt_frac": 0.1,
     "r_tip": 0.0,
-    "enforce_tail_angle": true,
-    "alpha_max_deg": 13.0,
+    "enforce_tail_angle": false,
+    "alpha_max_deg": 8.0,
     "Nt": 200
   },
   "mass": {
@@ -37,7 +37,7 @@
     "csv_path": "results/data/fuselaje_xy.csv"
   },
   "plots": {
-    "make_plots": true,
+    "make_plots": false,
     "dpi": 140
   }
 }

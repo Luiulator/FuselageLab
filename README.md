@@ -1,18 +1,22 @@
 # FuselageLab
 
-FuselageLab is a Python application for exploring simplified fuselage geometries, estimating basic aerodynamics from empirical correlations, and exporting results. It ships with a desktop GUI (Tkinter) that lets you adjust configuration via a categorized form, run the pipeline, and visualize a 3D model.
-
-The project is intentionally compact and dependency‑light by default. Optional add‑ons enable a more modern interactive 3D viewer.
+FuselageLab is a Python application for exploring the design of fuselage geometries, estimating their aerodynamics from empirical correlations, and exporting results.
+It ships with a desktop GUI (Tkinter) that lets you adjust configuration via a categorized form, run the pipeline, and visualize a 3D model of your fuselage.
 
 ## Highlights
 
-- Geometry synthesis: Haack nose + optional cylinder + cosine tail. Aerodynamic shapes studied by researchers for their drag minimisation in subsonic flow regimes.
+- Available geometries: FuselageLab focuses its design capabilities on aerodynamic shapes studied by researchers for their drag minimisation in subsonic and transonic flow regimes (yes, you can use it on a rocket!).
 - Aerodynamics: friction correlations (laminar / transition / turbulent) and estimations based on Hoerner's "Fluid Dynamic Drag" chapter on fuselage-like bodies.
-- Dimensions: integrals for the wetted area, base area, solid volume, and simple CG locations along x.
-- Mass: shell mass/weight from surface density or volume density if specified a skin thickness
+- Dimensions & Mass properties: it supports calculating the integrals for the wetted area, base area, solid volume, CG locations along the x-axis, and weight properties if it is given material density, and thus it is not necessary to use a CAD program for this.
 - Outputs: CSV of the 2D profile, JSON payload with results, and dashboard plots.
 - Exports: STL of the 3D fuselage surface (ASCII or binary).
 - GUI: dark theme, full‑pane Matplotlib wireframe in the app; optional interactive 3D in a browser or a pywebview window.
+
+These are a few of the geometries you can design in just a few clicks:
+
+![Plane Airframe Geometry](readme/images/geom1.png)
+
+![Ballistic-type Geometry](readme/images/geom2.png)
 
 ## Requirements
 
@@ -21,6 +25,7 @@ The project is intentionally compact and dependency‑light by default. Optional
 - Python packages (minimal):
   - `numpy`
   - `matplotlib`
+  - `vtk`
 
 Optional (for richer 3D):
 
@@ -113,11 +118,6 @@ Top‑level keys (see defaults in `src/configio.py`):
   - `make_plots`: generate dashboard plots to `results/figs`
   - `dpi`: matplotlib figure DPI (≥ 50)
 
-Notes:
-
-- `op.base_ratio` is derived automatically from `geom.base_ratio` for convenience.
-- Direct defaults and validation live in `src/configio.py`.
-
 ## What The Pipeline Does
 
 Code lives in `src/` and is orchestrated by `src/pipeline.py`:
@@ -129,6 +129,9 @@ Code lives in `src/` and is orchestrated by `src/pipeline.py`:
 - Outputs (`src/utils.py`): saves profile CSV and JSON payload; plots dashboard via `src/plots.py` (if enabled).
 
 ## 3D Visualization
+
+![FuselageLab UI](readme/images/Screenshot_1.png)
+
 
 The GUI prefers a simple, robust in‑app wireframe (Matplotlib) and provides a separate interactive 3D option.
 
