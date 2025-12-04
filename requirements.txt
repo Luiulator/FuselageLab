@@ -1,0 +1,8 @@
+numpy
+matplotlib
+vtk
+plotly
+pywebview
+tkinterweb
+customtkinter
+packaging
