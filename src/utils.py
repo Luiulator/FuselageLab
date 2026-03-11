@@ -44,9 +44,10 @@ def stamp_name(basename: str, suffix: str = "", ext: str = "") -> str:
 
 # --- STL / mesh utilities ---
 
-def revolve_profile_to_mesh(x: np.ndarray, r: np.ndarray, n_theta: int = 128) -> Tuple[np.ndarray, np.ndarray]:
+def revolve_profile_to_mesh(x: np.ndarray, r: np.ndarray, n_theta: int = 128, z_offset: np.ndarray | None = None) -> Tuple[np.ndarray, np.ndarray]:
     """
     Create a triangular surface mesh by revolving the profile (x, r) around the x-axis.
+    If z_offset is provided, it is added to the Z coordinate (upsweep).
 
     Returns (V, F):
     - V: float64 array (N, 3) of vertices
@@ -58,6 +59,13 @@ def revolve_profile_to_mesh(x: np.ndarray, r: np.ndarray, n_theta: int = 128) ->
         raise ValueError("revolve_profile_to_mesh: x and r must be 1D arrays with same length >= 2")
     if n_theta < 3:
         raise ValueError("revolve_profile_to_mesh: n_theta must be >= 3")
+
+    if z_offset is not None:
+        z_offset = np.asarray(z_offset, dtype=float)
+        if z_offset.size != x.size:
+            raise ValueError("z_offset must be the same size as x")
+    else:
+        z_offset = np.zeros_like(x)
 
     theta = np.linspace(0.0, 2.0*np.pi, num=n_theta, endpoint=False)
     cos_t = np.cos(theta)
@@ -72,9 +80,10 @@ def revolve_profile_to_mesh(x: np.ndarray, r: np.ndarray, n_theta: int = 128) ->
     for i in range(n_ax):
         xi = float(x[i])
         ri = float(r[i])
+        zi = float(z_offset[i])
         V[idx:idx+n_ang, 0] = xi
         V[idx:idx+n_ang, 1] = ri * cos_t
-        V[idx:idx+n_ang, 2] = ri * sin_t
+        V[idx:idx+n_ang, 2] = ri * sin_t + zi
         idx += n_ang
 
     # Triangles (two per quad), wrap around in angular direction
@@ -155,7 +164,8 @@ def save_stl_binary(path: str, V: np.ndarray, F: np.ndarray, solid_name: str = "
 
 def export_fuselage_stl(geom: dict, path: str, ascii: bool = True, n_theta: int = 128, name: str = "fuselage") -> None:
     """Convenience: revolve fuselage and save STL (ASCII or binary)."""
-    V, F = revolve_profile_to_mesh(geom["x"], geom["y"], n_theta=n_theta)
+    z_off = geom.get("z_offset")
+    V, F = revolve_profile_to_mesh(geom["x"], geom["y"], n_theta=n_theta, z_offset=z_off)
     if ascii:
         save_stl_ascii(path, V, F, solid_name=name)
     else:

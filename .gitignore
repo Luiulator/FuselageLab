@@ -1,0 +1,27 @@
+# Typical Python .gitignore
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+env/
+.env
+.pytest_cache/
+.tox/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+.DS_Store
+
+# Project Specific
+results/data/
+results/figs/
+config/
+*.stl
+*.csv
+*.json
+!config.json
+!readme/

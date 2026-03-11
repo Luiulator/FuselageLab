@@ -1,81 +1,92 @@
-# FuselageLab
+# FuselageLab ✈️
 
-FuselageLab is a Python application for exploring the design of fuselage geometries, estimating their aerodynamics from empirical correlations, and exporting results.
-It ships with a modern desktop GUI (CustomTkinter) that lets you adjust configuration via a categorized form, run the pipeline, and visualize a 3D model of your fuselage.
+[![Language](https://img.shields.io/badge/Language-Python-blue.svg)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-## Highlights
+**FuselageLab** is a specialized Python framework designed for the parametric modeling, aerodynamic estimation, and geometric analysis of aircraft fuselages. It combines a robust mathematical builder with a modern desktop GUI for rapid prototyping and design exploration.
 
-- **Modern UI**: Built with CustomTkinter for a sleek, dark-themed experience.
-- **Geometries**: Focuses on aerodynamic shapes (Haack series, etc.) for subsonic/transonic drag minimization.
-- **Aerodynamics**: Friction correlations (laminar/transition/turbulent) and Hoerner-based estimations.
-- **Analysis**: Calculates wetted area, volume, CG locations, and weight properties.
-- **Outputs**: CSV profiles, JSON results, and STL exports (ASCII/Binary).
-- **Visualization**: Integrated 3D wireframe viewer.
+![Fuselage Geometry Overview](readme/images/geom1.png)
 
-![Plane Airframe Geometry](readme/images/geom1.png)
+## 🚀 Key Features
 
-## Requirements
+- **Advanced Parametric Modeling**: 
+  - Dynamic nose profiles supporting Haack, Parabolic, and Hermite-Spline series.
+  - Asymmetric nose displacement ($h_w$) with anchored tip constraints.
+  - Global "Bluntness" control for organic, radome-style fillets.
+  - Detailed tail upsweep/upsweep and boattail angle enforcement.
+- **High-Fidelity Aerodynamics**:
+  - Friction drag estimations across Laminar, Transition, and Turbulent regimes.
+  - 3D correction factors and compressibility logic (Mach effects).
+  - Hoerner-based empirical correlations for total drag estimation.
+- **Geometric Analysis**:
+  - Precise wetted area (surface of revolution) and volume integration.
+  - Center of Gravity (CG) and mass property estimation based on skin density.
+  - Cross-sectional profile verification.
+- **Professional Visualization**:
+  - Real-time 3D wireframe viewer built with Matplotlib.
+  - Integrated schematic panel for reference dimensions.
+- **Interoperability**:
+  - Export to industry-standard STL format (Binary/ASCII).
+  - Profile data export to CSV for CFD preprocessing.
+  - Detailed result payloads in JSON.
 
-- Python 3.10+
-- Packages:
-  - `customtkinter`
-  - `packaging`
-  - `numpy`
-  - `matplotlib`
-  - `vtk` (optional, for advanced 3D)
-  - `plotly` (optional, for interactive 3D)
-  - `pywebview` (optional, for embedded interactive 3D)
+## 🛠️ Installation
 
-## Install
+### Prerequisites
+- Python 3.10 or higher.
 
-1.  **Clone the repository**:
-    ```bash
-    git clone https://github.com/Luiulator/FuselageLab.git
-    cd FuselageLab
-    ```
+### Steps
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/Luiulator/FuselageLab.git
+   cd FuselageLab
+   ```
 
-2.  **Install dependencies**:
-    ```bash
-    pip install -r requirements.txt
-    ```
+2. **Set up a virtual environment (recommended)**:
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   ```
 
-## Run
+3. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-- **Start the App**:
-  ```bash
-  python main.py
-  ```
-- **Legacy Mode**:
-  If you need the old Tkinter interface, run:
-  ```bash
-  python main_legacy.py
-  ```
+## 🖥️ Usage
 
-## Using The GUI
+Start the main application by running:
+```bash
+python main.py
+```
 
-- **Sidebar**:
-  - **Load/Save**: Manage your configuration JSON files.
-  - **Configuration**: Tabs for Geometry, Operation, CF Model, Builder, Mass, I/O, and Plots.
-  - **Results**: Real-time summary of aerodynamic coefficients and geometric properties.
-  - **Actions**: Run the pipeline, export STL files, or open the results folder.
+### GUI Operations
+- **Sidebar**: Manage configuration files and view real-time Results Summary.
+- **Geometry Tab**: Configure explicit dimensions ($L_n, L_c, L_t$, etc.) or relative fractions.
+- **Operation Tab**: Set cruise conditions (Velocity, Density, Mach).
+- **Builder Tab**: Adjust mesh discretization and export settings.
 
-- **3D View**:
-  - The left panel shows a 3D wireframe representation of your fuselage.
-  - It updates automatically after a successful run.
+## 📂 Project Structure
 
-## Project Structure
+```text
+├── main.py              # Application entry point
+├── config.json          # Default configuration
+├── src/
+│   ├── build.py         # Core geometry generation (Nose/Tail/Cabin)
+│   ├── calcs.py         # Aerodynamic & Physical equations
+│   ├── pipeline.py      # Execution orchestrator
+│   ├── gui/
+│   │   ├── app.py       # GUI Logic & Lifecycle
+│   │   ├── views/       # Tabbed forms & Result panels
+│   │   └── viewers/     # 3D Visualization engines
+└── results/             # Auto-generated CSV, JSON, and STL outputs
+```
 
-- `main.py`: New entry point (CustomTkinter App).
-- `main_legacy.py`: Old entry point (Standard Tkinter).
-- `src/gui/`:
-  - `app.py`: Main application logic.
-  - `views/`: UI components (ConfigForm, ResultsPanel).
-  - `viewers/`: 3D viewer implementations.
-- `src/pipeline.py`: Orchestrates the calculation flow.
-- `src/build.py`: Geometry generation.
-- `src/calcs.py`: Aerodynamic and geometric calculations.
-- `results/`: Output directory.
+## 📝 License
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
-## License
+## 🤝 Contributing
+Contributions are welcome! Please feel free to submit a Pull Request or open an issue for feature requests.
 
-No license has been set in this repository.
+---
+*Developed for aerospace engineering research and rapid conceptual design.*

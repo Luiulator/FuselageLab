@@ -11,6 +11,7 @@ from src.pipeline import run_case
 from src.utils import export_fuselage_stl, stamp_name
 from src.gui.views.config_form import ConfigForm
 from src.gui.views.results_panel import ResultsPanel
+from src.gui.views.schematic_panel import SchematicPanel
 from src.gui.viewers.matplotlib_viewer import MatplotlibViewer
 
 ctk.set_appearance_mode("Dark")
@@ -33,8 +34,8 @@ class App(ctk.CTk):
         self._load_config(self.config_path)
 
     def _build_ui(self):
-        self.grid_columnconfigure(0, weight=3) # 3D View
-        self.grid_columnconfigure(1, weight=1) # Sidebar
+        self.grid_columnconfigure(0, weight=3, minsize=800) # 3D View
+        self.grid_columnconfigure(1, weight=1, minsize=350) # Sidebar
         self.grid_rowconfigure(0, weight=1)
         
         # --- Left: 3D View ---
@@ -45,7 +46,7 @@ class App(ctk.CTk):
         self.view3d.pack(fill="both", expand=True)
         
         # --- Right: Sidebar ---
-        self.sidebar = ctk.CTkFrame(self, corner_radius=0)
+        self.sidebar = ctk.CTkFrame(self, corner_radius=0, width=400)
         self.sidebar.grid(row=0, column=1, sticky="nsew", padx=0, pady=0)
         self.sidebar.grid_rowconfigure(1, weight=1) # Config form expands
         self.sidebar.grid_columnconfigure(0, weight=1)
@@ -58,22 +59,32 @@ class App(ctk.CTk):
         ctk.CTkButton(self.top_bar, text="Save Config", command=self._on_save_clicked, width=100).pack(side="left", padx=5)
         
         # 2. Config Form
-        self.config_form = ConfigForm(self.sidebar)
+        self.config_form = ConfigForm(self.sidebar, on_method_change=self._on_method_changed)
         self.config_form.grid(row=1, column=0, sticky="nsew", padx=10, pady=5)
         
-        # 3. Results Panel
-        self.results_panel = ResultsPanel(self.sidebar)
-        self.results_panel.grid(row=2, column=0, sticky="ew", padx=10, pady=5)
+        # 3. Schematic Panel
+        self.schematic_panel = SchematicPanel(self.sidebar)
+        self.schematic_panel.grid(row=2, column=0, sticky="nsew", padx=10, pady=5)
         
-        # 4. Actions
+        # 4. Results Panel
+        self.results_panel = ResultsPanel(self.sidebar)
+        self.results_panel.grid(row=3, column=0, sticky="ew", padx=10, pady=5)
+
+        # 5. Actions (Once)
         self.actions_frame = ctk.CTkFrame(self.sidebar, fg_color="transparent")
-        self.actions_frame.grid(row=3, column=0, sticky="ew", padx=10, pady=20)
+        self.actions_frame.grid(row=4, column=0, sticky="ew", padx=10, pady=20)
         
         self.btn_run = ctk.CTkButton(self.actions_frame, text="RUN PIPELINE", command=self._on_run_clicked, height=40, font=ctk.CTkFont(size=14, weight="bold"), fg_color="green", hover_color="darkgreen")
         self.btn_run.pack(fill="x", pady=(0, 10))
         
         ctk.CTkButton(self.actions_frame, text="Export STL", command=self._export_stl).pack(fill="x", pady=5)
         ctk.CTkButton(self.actions_frame, text="Open Results", command=self._open_results).pack(fill="x", pady=5)
+
+    def _on_method_changed(self, method):
+        if method == "tubular":
+            self.schematic_panel.grid(row=2, column=0, sticky="nsew", padx=10, pady=5)
+        else:
+            self.schematic_panel.grid_forget()
 
     def _load_config(self, path):
         self.config_path = path

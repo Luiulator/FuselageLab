@@ -61,11 +61,21 @@ class MatplotlibViewer(ctk.CTkFrame):
 
         # Revolve
         n_theta = 64
+        # Use endpoint=True for wireframe plotting to close the loop smoothly
         theta = np.linspace(0.0, 2*np.pi, n_theta)
+        
         X = np.repeat(x[:, None], n_theta, axis=1)
         R = np.repeat(y[:, None], n_theta, axis=1)
+        
+        # Apply z_offset if present
+        z_off = geom.get("z_offset")
+        if z_off is not None:
+            z_off_2d = np.repeat(np.asarray(z_off)[:, None], n_theta, axis=1)
+        else:
+            z_off_2d = 0.0
+            
         Y = R * np.cos(theta)
-        Z = R * np.sin(theta)
+        Z = R * np.sin(theta) + z_off_2d
         
         self.ax.clear()
         self.ax.plot_wireframe(X, Y, Z, 
@@ -81,16 +91,24 @@ class MatplotlibViewer(ctk.CTkFrame):
         x_min, x_max = np.nanmin(X), np.nanmax(X)
         y_min, y_max = np.nanmin(Y), np.nanmax(Y)
         z_min, z_max = np.nanmin(Z), np.nanmax(Z)
-        max_range = max(x_max-x_min, y_max-y_min, z_max-z_min)
         
+        # Calculate centers
         x_mid = 0.5 * (x_max + x_min)
         y_mid = 0.5 * (y_max + y_min)
         z_mid = 0.5 * (z_max + z_min)
         
+        # Calculate maximum range to define the cube
+        max_range = max(x_max - x_min, y_max - y_min, z_max - z_min)
         half = 0.5 * max_range
+        
+        # Set limits for a uniform cubical data space
         ax.set_xlim(x_mid - half, x_mid + half)
         ax.set_ylim(y_mid - half, y_mid + half)
         ax.set_zlim(z_mid - half, z_mid + half)
+        
+        # CRITICAL: Force the 3D box to be a cube in screen space.
+        # This prevents the "skewed" look when the window is resized.
+        ax.set_box_aspect((1, 1, 1))
 
     def clear(self):
         self.ax.clear()

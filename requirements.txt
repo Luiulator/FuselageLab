@@ -1,8 +1,9 @@
-numpy
-matplotlib
-vtk
-plotly
-pywebview
-tkinterweb
-customtkinter
+numpy>=1.24.0
+matplotlib>=3.7.0
+customtkinter>=5.2.0
 packaging
+# Optional for advanced 3D or exports
+vtk>=9.2.0
+plotly>=5.13.0
+pywebview>=4.0.0
+tkinterweb>=1.2.0

@@ -1,7 +1,7 @@
 import os
 import json
 import numpy as np
-from . import build, calcs, plots
+from . import build, calcs
 from .utils import save_profile_csv, save_results_json
 
 
@@ -10,7 +10,12 @@ def run_case(cfg: dict) -> dict:
     geom = build.build_fuselage(cfg["geom"], cfg["builder"])   # devuelve x,y,R,L,...
 
     # 2) Aerodinámica
-    aero = calcs.aero_from_geometry(geom, cfg["op"], cfg["cf_model"])
+    method = cfg["builder"].get("parametrization_method", "fractions")
+    if method == "tubular":
+        # Pass builder config as tub_params since it contains psi, theta
+        aero = calcs.aero_tubular(geom, cfg["op"], cfg["builder"])
+    else:
+        aero = calcs.aero_from_geometry(geom, cfg["op"], cfg["cf_model"])
 
     # 3) Integrales geométricas + masa
     integrals = calcs.geom_integrals(geom, cfg["mass"]["include_base_disk_area"])
@@ -20,9 +25,8 @@ def run_case(cfg: dict) -> dict:
     if cfg["io"]["export_csv"]:
         save_profile_csv(geom, cfg["io"]["csv_path"])
 
-    # 5) Gráficas (dashboard eliminado para interfaz en vivo en la GUI)
-    # Se deja de generar la figura de "dashboard" en disco. La GUI ahora
-    # muestra gráficos 2D interactivos bajo demanda.
+    # 5) Empaquetar resultados
+    # La GUI ahora muestra gráficos 2D interactivos bajo demanda a partir del payload.
 
     # 6) Empaquetar resultados
     payload = {"geom": geom, "aero": aero, "integrals": integrals, "mass": mass}

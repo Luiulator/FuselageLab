@@ -10,6 +10,8 @@ class ResultsPanel(ctk.CTkFrame):
         self.label.grid(row=0, column=0, columnspan=2, sticky="ew", padx=10, pady=(10, 5))
         
         self.summary_vars = {
+            "Lf": tk.StringVar(value="-"),
+            "df": tk.StringVar(value="-"),
             "ReL": tk.StringVar(value="-"),
             "Cf_eff": tk.StringVar(value="-"),
             "CD_total": tk.StringVar(value="-"),
@@ -20,11 +22,13 @@ class ResultsPanel(ctk.CTkFrame):
         self._build_ui()
 
     def _build_ui(self):
-        self._add_summary_row("ReL", 1)
-        self._add_summary_row("Cf_eff", 2)
-        self._add_summary_row("CD_total", 3)
-        self._add_summary_row("D_total [N]", 4, key="D_total")
-        self._add_summary_row("S_total [m²]", 5, key="S_total")
+        self._add_summary_row("L_f [m]", 1, key="Lf")
+        self._add_summary_row("d_f [m]", 2, key="df")
+        self._add_summary_row("Reₗ", 3, key="ReL")
+        self._add_summary_row("C_f,eff", 4, key="Cf_eff")
+        self._add_summary_row("C_D,ₜₒₜₐₗ", 5, key="CD_total")
+        self._add_summary_row("Dₜₒₜₐₗ [N]", 6, key="D_total")
+        self._add_summary_row("Sₜₒₜₐₗ [m²]", 7, key="S_total")
 
     def _add_summary_row(self, label: str, row: int, key: str | None = None):
         if key is None:
@@ -37,10 +41,32 @@ class ResultsPanel(ctk.CTkFrame):
         try:
             aero = payload.get("aero", {})
             integrals = payload.get("integrals", {})
+            geom = payload.get("geom", {})
+            
+            # Dimensions
+            l_val = geom.get("L_f") if "L_f" in geom else geom.get("l", 0.0)
+            d_val = geom.get("d", 0.0)
+            self.summary_vars["Lf"].set(f"{l_val:.2f}")
+            self.summary_vars["df"].set(f"{d_val:.2f}")
+
+            # Common
             self.summary_vars["ReL"].set(f"{aero.get('ReL', float('nan')):.3g}")
-            self.summary_vars["Cf_eff"].set(f"{aero.get('Cf_eff', float('nan')):.5f}")
-            self.summary_vars["CD_total"].set(f"{aero.get('CD_total', float('nan')):.5f}")
-            self.summary_vars["D_total"].set(f"{aero.get('D_total', float('nan')):.4g}")
+            
+            # Helper to safely get float
+            def g(k): return aero.get(k, float('nan'))
+            
+            # Check if we have tubular results
+            if "CD_fus" in aero:
+                # Tubular mode
+                self.summary_vars["Cf_eff"].set(f"{g('CD_fp'):.5f} (fp)")
+                self.summary_vars["CD_total"].set(f"{g('CD_fus'):.5f}")
+                self.summary_vars["D_total"].set(f"{g('Drag'):.4g}")
+            else:
+                # Classic mode
+                self.summary_vars["Cf_eff"].set(f"{g('Cf_eff'):.5f}")
+                self.summary_vars["CD_total"].set(f"{g('CD_total'):.5f}")
+                self.summary_vars["D_total"].set(f"{g('D_total'):.4g}")
+            
             self.summary_vars["S_total"].set(f"{integrals.get('S_total', float('nan')):.4g}")
         except Exception as e:
             print(f"Could not update summary: {e}")

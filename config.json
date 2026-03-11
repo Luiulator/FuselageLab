@@ -1,13 +1,14 @@
 {
   "geom": {
-    "l": 10.0,
-    "d": 2.0,
+    "l": 1.2,
+    "d": 0.15,
     "base_ratio": 0.0
   },
   "op": {
-    "V": 15.0,
-    "rho": 1.225,
-    "nu": 1.5e-05
+    "V": 12.0,
+    "rho": 0.4135,
+    "nu": 3.7e-05,
+    "Mach": 0.78
   },
   "cf_model": {
     "mode": "turbulent",
@@ -15,29 +16,38 @@
     "threeD_correction": 1.07
   },
   "builder": {
-    "Ln_frac": 0.9,
-    "C_haack": 0.99,
+    "parametrization_method": "tubular",
+    "nose_type": "Haack",
+    "Ln_frac": 0.2,
+    "C_haack": 0.3333333333333333,
     "Nn": 200,
-    "Lt_frac": 0.1,
-    "r_tip": 0.0,
-    "enforce_tail_angle": false,
-    "alpha_max_deg": 8.0,
-    "Nt": 200
+    "Lt_frac": 0.8,
+    "r_tip": 0.01,
+    "enforce_tail_angle": true,
+    "alpha_max_deg": 12.0,
+    "Nt": 200,
+    "FRn": 1.5,
+    "FRt": 2.5,
+    "Lc": 0.2,
+    "Ln": 0.2,
+    "Lt": 0.2,
+    "hw": -0.02,
+    "hu": 0.5,
+    "rn": 5.0,
+    "use_double_nose": true,
+    "psi": 45.0,
+    "theta": 0.0
   },
   "mass": {
     "use_surface_density": false,
     "sigma_surface": 1.0,
-    "rho_material": 1250.0,
-    "t_skin": 0.0005,
+    "rho_material": 2800.0,
+    "t_skin": 0.002,
     "include_base_disk_area": false,
     "g": 9.81
   },
   "io": {
     "export_csv": true,
     "csv_path": "results/data/fuselaje_xy.csv"
-  },
-  "plots": {
-    "make_plots": false,
-    "dpi": 140
   }
 }

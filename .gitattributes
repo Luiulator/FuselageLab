@@ -1,0 +1,9 @@
+# Force GitHub Linguist to see the project as 100% Python
+# Ignore vendor/dependency folders and mark them as such
+*.py linguist-language=Python
+*.json linguist-vendored
+*.md linguist-documentation
+readme/* linguist-documentation
+results/* linguist-vendored
+tests/* linguist-documentation
+examples/* linguist-documentation

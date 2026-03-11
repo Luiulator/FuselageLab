@@ -5,8 +5,8 @@ import os
 
 _DEF = {
     "geom": {
-        "l": 1.10,
-        "d": 0.18,
+        "l": 37.5,
+        "d": 4.0,
         "base_ratio": 0.0
     },
     "op": {
@@ -27,7 +27,20 @@ _DEF = {
         "r_tip": 0.0,
         "enforce_tail_angle": True,
         "alpha_max_deg": 13.0,
-        "Nt": 200
+        "Nt": 200,
+        "FRn": 1.5,
+        "FRt": 2.5,
+        "Lc": 22.0,
+        "Ln": 6.0,
+        "Lt": 9.5,
+        "hw": -0.4,
+        "hu": 1.8,
+        "rn": 0.1,
+        "use_double_nose": True,
+        "psi": 40.0,
+        "theta": 15.0,
+        "nose_type": "Haack",
+        "parametrization_method": "tubular"
     },
     "mass": {
         "use_surface_density": False,
@@ -40,10 +53,6 @@ _DEF = {
     "io": {
         "export_csv": True,
         "csv_path": "results/data/fuselaje_xy.csv"
-    },
-    "plots": {
-        "make_plots": True,
-        "dpi": 140
     }
 }
 
@@ -84,6 +93,19 @@ def _validate(cfg: dict) -> None:
         raise ValueError("Nn/Nt deben ser ≥ 10")
     if cfg["builder"]["alpha_max_deg"] <= 0:
         raise ValueError("alpha_max_deg debe ser > 0")
+    
+    # Tubular checks
+    if cfg["builder"].get("FRn", 0) <= 0: cfg["builder"]["FRn"] = 1.5
+    if cfg["builder"].get("FRt", 0) <= 0: cfg["builder"]["FRt"] = 2.5
+    if cfg["builder"].get("Ln", 0) <= 0:  cfg["builder"]["Ln"] = 0.5
+    if cfg["builder"].get("Lt", 0) <= 0:  cfg["builder"]["Lt"] = 0.5
+    if cfg["builder"].get("Lc", 0) < 0:   cfg["builder"]["Lc"] = 0.5
+    if cfg["builder"].get("hw", -1e6) == -1e6: cfg["builder"]["hw"] = 0.1
+    if cfg["builder"].get("hu", -1e6) == -1e6: cfg["builder"]["hu"] = 0.1
+    if cfg["builder"].get("rn", -1) < 0: cfg["builder"]["rn"] = 0.1
+    if "use_double_nose" not in cfg["builder"]: cfg["builder"]["use_double_nose"] = False
+    if cfg["builder"].get("psi", 0) < 10: cfg["builder"]["psi"] = 45.0
+    if cfg["builder"].get("theta", -1) < 0: cfg["builder"]["theta"] = 12.0
 
     # Mass
     if cfg["mass"]["use_surface_density"]:
@@ -93,12 +115,9 @@ def _validate(cfg: dict) -> None:
             raise ValueError("rho_material y t_skin deben ser > 0")
     if cfg["mass"]["g"] <= 0: raise ValueError("g debe ser > 0")
 
-    # Plots
-    if cfg["plots"]["dpi"] < 50: raise ValueError("plots.dpi muy bajo (<50)")
 
 def _ensure_dirs(cfg: dict) -> None:
     os.makedirs("results/data", exist_ok=True)
-    os.makedirs("results/figs", exist_ok=True)
     # Normaliza csv_path a results/data si sólo dieron un nombre
     csv_path = cfg["io"]["csv_path"]
     if not os.path.isabs(csv_path) and not csv_path.startswith("results/"):
